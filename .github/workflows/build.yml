@@ -28,8 +28,8 @@ jobs:
 
       - name: Build with PyInstaller
         run: |
-          pyinstaller --onefile --windowed typewriter.py
-          pyinstaller --onefile --windowed typewriter-receiver.py
+          pyinstaller --onefile --windowed typewriter.py --distpath dist/typewriter
+          pyinstaller --onefile --windowed typewriter-receiver.py --distpath dist/typewriter-receiver
 
       - name: Archive build artifacts
         if: success()
@@ -37,5 +37,5 @@ jobs:
         with:
           name: typewriter-${{ matrix.os }}
           path: |
-            dist/typewriter
-            dist/typewriter-receiver
+            dist/typewriter/*
+            dist/typewriter-receiver/*
