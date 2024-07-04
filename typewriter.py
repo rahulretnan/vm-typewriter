@@ -59,7 +59,6 @@ def disconnect_from_vm():
 # Set up the GUI
 root = tk.Tk()
 root.title("Typewriter Sender")
-root.attributes('-topmost', True)  # Make the window stay on top
 
 # IP address input field and connect button frame
 ip_frame = tk.Frame(root)
