@@ -5,15 +5,6 @@ import logging
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-CHAR_LIMIT = 500  # Character limit for the text input
-
-def enforce_char_limit(event=None):
-    current_text = text_field.get("1.0", tk.END)
-    if len(current_text) > CHAR_LIMIT:
-        text_field.delete("1.0", tk.END)
-        text_field.insert("1.0", current_text[:CHAR_LIMIT])
-        logging.info("Character limit reached")
-
 def send_text():
     if client_socket:
         text = text_field.get("1.0", tk.END)
@@ -39,8 +30,9 @@ def clear_text():
     text_field.delete("1.0", tk.END)
     logging.info("Text field cleared")
 
-def pause_typing():
-    send_command("PAUSE")
+def set_speed():
+    speed = speed_entry.get()
+    send_command(f"SPEED {speed}")
 
 def connect_to_vm():
     global client_socket
@@ -86,8 +78,6 @@ connect_button.pack(side=tk.LEFT)
 text_field = tk.Text(root, height=20, width=100)
 text_field.pack(pady=10)
 
-text_field.bind("<<Modified>>", enforce_char_limit)  # Bind the function to the <<Modified>> event
-
 # Create a frame to hold the buttons
 button_frame = tk.Frame(root)
 button_frame.pack(pady=10)
@@ -104,8 +94,19 @@ stop_button.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=5)
 clear_button = tk.Button(button_frame, text="Clear Text", command=clear_text)
 clear_button.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=5)
 
-pause_button = tk.Button(button_frame, text="Pause Typing", command=pause_typing)
-pause_button.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=5)
+# Speed input field and set speed button
+speed_frame = tk.Frame(root)
+speed_frame.pack(pady=10)
+
+speed_label = tk.Label(speed_frame, text="Set Typing Speed (seconds per char):")
+speed_label.pack(side=tk.LEFT)
+
+speed_entry = tk.Entry(speed_frame)
+speed_entry.insert(0, '0')  # Set default speed
+speed_entry.pack(side=tk.LEFT, padx=5)
+
+speed_button = tk.Button(speed_frame, text="Set Speed", command=set_speed)
+speed_button.pack(side=tk.LEFT)
 
 # Initialize the socket as None
 client_socket = None
