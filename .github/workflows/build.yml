@@ -56,12 +56,14 @@ jobs:
           echo $NEW_VERSION > version.txt
 
       - name: Commit new version
+        env:
+          PAT: ${{ secrets.PAT }}
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
           git add version.txt
           git commit -m "Increment version to ${{ env.NEW_VERSION }}"
-          git push
+          git push https://x-access-token:${{ secrets.PAT }}@github.com/${{ github.repository }}.git HEAD:main
 
       - name: Create Tag
         if: success()
