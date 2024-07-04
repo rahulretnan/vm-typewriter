@@ -36,3 +36,36 @@ jobs:
           path: |
             dist/typewriter
             dist/typewriter-receiver
+
+      - name: Create GitHub Release
+        if: success()
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        if: success()
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/typewriter
+          asset_name: typewriter-${{ matrix.os }}
+          asset_content_type: application/zip
+
+      - name: Upload Release Asset
+        if: success()
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/typewriter-receiver
+          asset_name: typewriter-receiver-${{ matrix.os }}
+          asset_content_type: application/zip
